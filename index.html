@@ -1,0 +1,303 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple React To-Do App</title>
+  <style>
+    /* CSS Styles */
+
+    /* Body styles */
+    body {
+      font-family: Georgia, serif; /* Set default font to Georgia serif */
+      background-color: #f8f9fa; /* Light gray background */
+      display: flex;
+      justify-content: center; /* Center align content horizontally */
+      align-items: center; /* Center align content vertically */
+      height: 100vh; /* Full viewport height */
+      margin: 0; /* Remove default margin */
+    }
+
+    /* Container styles */
+    .container {
+      width: 100%;
+      max-width: 600px; /* Limit container width for readability */
+      background-color: #fff; /* White background */
+      padding: 30px; /* Padding inside container */
+      border-radius: 10px; /* Rounded corners */
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Box shadow for depth */
+    }
+
+    /* Heading styles */
+    h1 {
+      text-align: center; /* Center align heading */
+      color: #343a40; /* Dark color for heading */
+      margin-bottom: 20px; /* Space below heading */
+    }
+
+    /* Input and button styles */
+    input[type="text"] {
+      width: calc(100% - 80px); /* Input width, minus button width */
+      padding: 12px; /* Padding inside input */
+      font-size: 16px; /* Font size */
+      border: 1px solid #ced4da; /* Border color */
+      border-radius: 6px 0 0 6px; /* Rounded corners (left) */
+      outline: none; /* Remove default outline */
+    }
+
+    button {
+      padding: 12px 20px; /* Padding inside button */
+      font-size: 16px; /* Font size */
+      border: none; /* No border */
+      background-color: #007bff; /* Blue background */
+      color: #fff; /* White text color */
+      border-radius: 0 6px 6px 0; /* Rounded corners (right) */
+      cursor: pointer; /* Pointer cursor */
+      transition: background-color 0.3s ease; /* Smooth background transition */
+    }
+
+    button:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+    }
+
+    /* Task list styles */
+    ul {
+      list-style-type: none; /* Remove default list style */
+      padding: 0; /* Remove default padding */
+      margin-top: 20px; /* Space above task list */
+    }
+
+    li {
+      background-color: #f8f9fa; /* Light gray background */
+      padding: 15px; /* Padding inside each task item */
+      margin-bottom: 10px; /* Space below each task item */
+      border-radius: 8px; /* Rounded corners */
+      display: flex; /* Flex layout for button alignment */
+      justify-content: space-between; /* Space evenly between elements */
+      align-items: center; /* Center align items vertically */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow for depth */
+      transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+    }
+
+    li:hover {
+      transform: translateY(-5px); /* Lift on hover */
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Darker shadow on hover */
+    }
+
+    li.completed {
+      background-color: #d4edda; /* Light green background for completed tasks */
+      text-decoration: line-through; /* Strikethrough text for completed tasks */
+    }
+
+    /* Button group styles */
+    .btn-group {
+      display: flex; /* Flex layout for buttons */
+    }
+
+    .btn-group button {
+      margin-left: 5px; /* Space between buttons */
+      padding: 8px 12px; /* Padding inside buttons */
+      font-size: 14px; /* Font size */
+      border-radius: 6px; /* Rounded corners */
+      cursor: pointer; /* Pointer cursor */
+      transition: background-color 0.3s ease; /* Smooth background transition */
+    }
+
+    .btn-group button:hover {
+      opacity: 0.8; /* Slightly lower opacity on hover */
+    }
+
+    /* Modal styles */
+    .modal {
+      display: none; /* Hide modal by default */
+      position: fixed; /* Fixed position */
+      z-index: 1; /* Z-index for stacking order */
+      left: 0; /* Align to left edge */
+      top: 0; /* Align to top edge */
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Allow scrolling */
+      background-color: rgba(0, 0, 0, 0.4); /* Semi-transparent black background */
+    }
+
+    .modal-content {
+      background-color: #fefefe; /* White background for modal content */
+      margin: 15% auto; /* Center modal vertically */
+      padding: 20px; /* Padding inside modal content */
+      border-radius: 10px; /* Rounded corners */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Light shadow for depth */
+      animation: zoomIn 0.3s ease; /* Zoom animation */
+    }
+
+    @keyframes zoomIn {
+      from {
+        transform: scale(0); /* Scale from zero */
+      }
+      to {
+        transform: scale(1); /* Scale to full size */
+      }
+    }
+
+    .modal-content input[type="text"] {
+      width: calc(100% - 24px); /* Input width, minus padding */
+      padding: 12px; /* Padding inside input */
+      font-size: 16px; /* Font size */
+      border: 1px solid #ced4da; /* Border color */
+      border-radius: 6px; /* Rounded corners */
+      margin-bottom: 10px; /* Space below input */
+      outline: none; /* Remove default outline */
+    }
+
+    .modal-content button {
+      padding: 12px 20px; /* Padding inside button */
+      font-size: 16px; /* Font size */
+      border: none; /* No border */
+      background-color: #007bff; /* Blue background */
+      color: #fff; /* White text color */
+      border-radius: 6px; /* Rounded corners */
+      cursor: pointer; /* Pointer cursor */
+      transition: background-color 0.3s ease; /* Smooth background transition */
+    }
+
+    .modal-content button:hover {
+      background-color: #0056b3; /* Darker blue on hover */
+    }
+
+    .close {
+      color: #aaa; /* Light gray text color */
+      float: right; /* Align to right */
+      font-size: 28px; /* Larger font size */
+      font-weight: bold; /* Bold text */
+      cursor: pointer; /* Pointer cursor */
+      transition: color 0.3s ease; /* Smooth color transition */
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #555; /* Darker gray on hover/focus */
+      text-decoration: none; /* Remove underline */
+    }
+  </style>
+</head>
+<body>
+  <!-- Main container for the application -->
+  <div class="container">
+    <h1>Simple React To-Do App</h1>
+
+    <!-- Input field and button to add tasks -->
+    <div style="display: flex;">
+      <input type="text" id="taskInput" placeholder="Enter task">
+      <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <!-- List to display tasks -->
+    <ul id="taskList"></ul>
+  </div>
+
+  <!-- Modal for editing tasks -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <input type="text" id="editTaskInput" placeholder="Edit task">
+      <button onclick="saveEditedTask()">Save Changes</button>
+    </div>
+  </div>
+
+  <!-- JavaScript section for dynamic functionality -->
+  <script>
+    // Array to store tasks
+    let tasks = [];
+
+    // Function to add a new task
+    function addTask() {
+      const taskInput = document.getElementById('taskInput');
+      const task = taskInput.value.trim();
+      if (task !== '') {
+        tasks.push({ title: task, completed: false }); // Add task to array
+        taskInput.value = ''; // Clear input field
+        renderTasks(); // Render updated task list
+      }
+    }
+
+    // Function to render tasks
+    function renderTasks() {
+      const taskList = document.getElementById('taskList');
+      taskList.innerHTML = ''; // Clear previous tasks
+      tasks.forEach((task, index) => {
+        const li = document.createElement('li'); // Create list item
+        li.textContent = task.title; // Set text content
+        li.className = task.completed ? 'completed' : ''; // Apply completed class if task is completed
+
+        const btnGroup = document.createElement('div'); // Create button group
+        btnGroup.className = 'btn-group';
+
+        // Complete Button
+        const completeButton = document.createElement('button');
+        completeButton.textContent = task.completed ? 'Undo' : 'Complete'; // Toggle text based on task completion
+        completeButton.className = 'btn btn-sm';
+        completeButton.classList.add(task.completed ? 'btn-outline-secondary' : 'btn-outline-success');
+        completeButton.onclick = () => toggleTaskCompletion(index); // Toggle task completion
+        btnGroup.appendChild(completeButton); // Append to button group
+
+        // Edit Button
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.className = 'btn btn-sm btn-outline-info';
+        editButton.onclick = () => openEditModal(index); // Open edit modal
+        btnGroup.appendChild(editButton); // Append to button group
+
+        // Delete Button
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.className = 'btn btn-sm btn-outline-danger';
+        deleteButton.onclick = () => deleteTask(index); // Delete task
+        btnGroup.appendChild(deleteButton); // Append to button group
+
+        li.appendChild(btnGroup); // Append button group to list item
+        taskList.appendChild(li); // Append list item to task list
+      });
+    }
+
+    // Function to toggle task completion
+    function toggleTaskCompletion(index) {
+      tasks[index].completed = !tasks[index].completed; // Toggle completed status
+      renderTasks(); // Re-render tasks
+    }
+
+    // Function to open edit modal
+    function openEditModal(index) {
+      const editModal = document.getElementById('editModal'); // Get edit modal
+      const editTaskInput = document.getElementById('editTaskInput'); // Get edit task input
+      editTaskInput.value = tasks[index].title; // Populate input with task title
+      editModal.style.display = 'block'; // Display modal
+
+      // Save edited task function (defined here to access index)
+      saveEditedTask = () => {
+        tasks[index].title = editTaskInput.value.trim(); // Update task title
+        closeModal(); // Close modal
+        renderTasks(); // Re-render tasks
+      }
+    }
+
+    // Function to close modal
+    function closeModal() {
+      const editModal = document.getElementById('editModal'); // Get edit modal
+      editModal.style.display = 'none'; // Hide modal
+    }
+
+    // Function to delete task
+    function deleteTask(index) {
+      tasks.splice(index, 1); // Remove task from array
+      renderTasks(); // Re-render tasks
+    }
+
+    // Close modal when clicking outside modal content
+    window.onclick = function(event) {
+      const editModal = document.getElementById('editModal'); // Get edit modal
+      if (event.target === editModal) {
+        editModal.style.display = 'none'; // Hide modal if clicked outside modal content
+      }
+    };
+  </script>
+</body>
+</html>
